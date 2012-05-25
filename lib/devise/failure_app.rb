@@ -90,8 +90,12 @@ module Devise
       opts[:format] = request_format unless skip_format?
 
       context = send(Devise.router_name)
+      main_context = send(:main_app)
 
-      if context.respond_to?(route)
+
+      if main_context.respond_to?(route)
+        main_context.send(route, opts)
+      elsif context.respond_to?(route)
         context.send(route, opts)
       elsif respond_to?(:root_path)
         root_path(opts)
